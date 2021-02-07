@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Answers</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: rgb(65, 66, 96);
+        font-family: 'Courier New', Courier, Arial, monospace;
+        overflow-y: scroll;
+        overflow-x: scroll;
+      }
+
+      .wrapper {
+        padding: 20px;
+        min-width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .textarea {
+        padding: 25px;
+        border: 0;
+        border-radius: 20px;
+        background-color: #eee;
+        color: rgb(10, 10, 10);
+        font-size: 18px;
+        outline: none;
+        cursor: text;
+      }
+
+      .textarea#in {
+        padding-right: 40px;
+        background-color: rgb(37, 37, 37);
+        color: #eee;
+        position: relative;
+        right: -20px;
+        resize: none;
+        height: 700px;
+        min-width: 500px;
+        width: 500px;
+      }
+
+      pre#out {
+        box-shadow: 0 0 10px 0 black;
+        position: relative;
+        left: -20px;
+        min-width: 1000px;
+        min-height: 700px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <textarea
+        autofocus="true"
+        class="textarea"
+        placeholder="Подставьте в это поле необходимые данные. Ответы обычно скрыты в файлах .dfm или .~dfm, которые обычно находятся в папке 'Исходники'. Файл обязательно должен содержать строку 'Lines.Strings'. После вставки, возможно, придется подождать 5-10 сек."
+        name="in"
+        id="in"
+      ></textarea>
+      <pre class="textarea" name="out" id="out"></pre>
+    </div>
+    <script>
+      const input = document.querySelector('textarea#in');
+      const output = document.querySelector('pre#out');
+
+      const codeTable = {
+        1025: 'Ё',
+        1040: 'А',
+        1041: 'Б',
+        1042: 'В',
+        1043: 'Г',
+        1044: 'Д',
+        1045: 'Е',
+        1046: 'Ж',
+        1047: 'З',
+        1048: 'И',
+        1049: 'Й',
+        1050: 'К',
+        1051: 'Л',
+        1052: 'М',
+        1053: 'Н',
+        1054: 'О',
+        1055: 'П',
+        1056: 'Р',
+        1057: 'С',
+        1058: 'Т',
+        1059: 'У',
+        1060: 'Ф',
+        1061: 'Х',
+        1062: 'Ц',
+        1063: 'Ч',
+        1064: 'Ш',
+        1065: 'Щ',
+        1066: 'Ъ',
+        1067: 'Ы',
+        1068: 'Ь',
+        1069: 'Э',
+        1070: 'Ю',
+        1071: 'Я',
+        1072: 'а',
+        1073: 'б',
+        1074: 'в',
+        1075: 'г',
+        1076: 'д',
+        1077: 'е',
+        1078: 'ж',
+        1079: 'з',
+        1080: 'и',
+        1081: 'й',
+        1082: 'к',
+        1083: 'л',
+        1084: 'м',
+        1085: 'н',
+        1086: 'о',
+        1087: 'п',
+        1088: 'р',
+        1089: 'с',
+        1090: 'т',
+        1091: 'у',
+        1092: 'ф',
+        1093: 'х',
+        1094: 'ц',
+        1095: 'ч',
+        1096: 'ш',
+        1097: 'щ',
+        1098: 'ъ',
+        1099: 'ы',
+        1100: 'ь',
+        1101: 'э',
+        1102: 'ю',
+        1103: 'я',
+      };
+
+      input.addEventListener('keydown', event => {
+        if (event.altKey) return;
+
+        output.textContent = 'Подождите, майним крипту...';
+
+        const timeoutId = setTimeout(() => {
+          const rawAnswers = [];
+          const newData = event.target.value
+            .replace(/#1[0-9]{3}/g, $ => codeTable[$.slice(1)] || '')
+            .replace(/'/g, '');
+
+          let isEmptyText = '';
+          if (!event.target.value) isEmptyText = ' ';
+
+          const matched = newData.match(
+            /Lines\.Strings\s=\s\((\n|\t|\r|.)*?\)(\r|\t|\n)/g,
+          );
+
+          rawAnswers.push(...(matched || []));
+
+          const answers = rawAnswers.filter(Boolean);
+          output.textContent =
+            rawAnswers.join(/\n/) || isEmptyText || 'Не удалось перевести.';
+
+          input.blur();
+          clearTimeout(timeoutId);
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
